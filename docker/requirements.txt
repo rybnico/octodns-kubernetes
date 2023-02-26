@@ -1,0 +1,2 @@
+octodns==0.9.21
+octodns-kubernetes==0.0.1

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ -L "$0" ]; then
+    script_dir=$(cd "$(dirname "$(readlink "$0")")" && pwd)
+else
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+fi
+
+TAG="rybnico/octodns-kubernetes"
+
+set -ex
+
+"${script_dir}/docker-cibuild"
+docker push "$TAG"

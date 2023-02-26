@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -L "$0" ]; then
+    script_dir=$(cd "$(dirname "$(readlink "$0")")" && pwd)
+else
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+fi
+
+FLAVOR="octodns-kubernetes"
+TAG="rybnico/octodns-kubernetes"
+GITHUB_REPOSITORY="rybnico/octodns-kubernetes"
+
+set -ex
+
+docker build --tag "$TAG" \
+    --label org.opencontainers.image.created="$(date --rfc-3339=seconds)" \
+    --label org.opencontainers.image.url="https://github.com/${GITHUB_REPOSITORY}" \
+    --label org.opencontainers.image.documentation="https://github.com/rybnico/octodns-kubernetes#readme" \
+    --label org.opencontainers.image.source="https://github.com/${GITHUB_REPOSITORY}" \
+    --label org.opencontainers.image.revision="$GITHUB_SHA" \
+    --label org.opencontainers.image.licenses=MIT \
+    "$script_dir/../docker"

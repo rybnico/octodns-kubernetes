@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -L "$0" ]; then
+    script_dir=$(cd "$(dirname "$(readlink "$0")")" && pwd)
+else
+    script_dir=$(cd "$(dirname "$0")" && pwd)
+fi
+
+"${script_dir}/docker-build"
+"${script_dir}/docker-test"
