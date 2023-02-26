@@ -19,7 +19,7 @@ class MockClient(object):
 
 class TestKubernetesSource(TestCase):
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_complete(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
@@ -165,7 +165,7 @@ class TestKubernetesSource(TestCase):
         self.assertIn('3:3:3:3:3:3:3:3', v6_target_record.values)
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_null(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
@@ -193,7 +193,7 @@ class TestKubernetesSource(TestCase):
         self.assertEqual(0, len(zone.records))
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_invalid(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
@@ -266,7 +266,7 @@ class TestKubernetesSource(TestCase):
         self.assertEqual(1, len(zone.records))
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_duplicates(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
@@ -301,7 +301,7 @@ class TestKubernetesSource(TestCase):
         self.assertEqual(sorted(zone.records)[0].values, ['1:1:1:1:1:1:1:1'])
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_target(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(client.V1IngressList(items=[]))
@@ -311,7 +311,7 @@ class TestKubernetesSource(TestCase):
         self.assertEqual(0, len(zone.records))
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_cname_and_ip(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
@@ -349,7 +349,7 @@ class TestKubernetesSource(TestCase):
         self.assertEqual(sorted(zone.records)[0].values, ['1:1:1:1:1:1:1:1'])
 
     @patch('kubernetes.client.NetworkingV1Api')
-    @patch('kubernetes.config.load_kube_config')
+    @patch('kubernetes.config.load_config')
     def test_lenient(self, mock_config, mock_client):
         mock_config.return_value = None
         mock_client.return_value = MockClient(
