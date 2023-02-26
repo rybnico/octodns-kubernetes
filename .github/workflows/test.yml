@@ -1,0 +1,9 @@
+jobs:
+  Test_kubernetes:
+    name: kubernetes
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: script/cibuild kubernetes kubernetes
+name: Test
+'on': push
