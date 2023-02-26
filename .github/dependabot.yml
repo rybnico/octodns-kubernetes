@@ -1,0 +1,13 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/all"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 99
+- package-ecosystem: docker
+  directory: "/all"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 99
+
