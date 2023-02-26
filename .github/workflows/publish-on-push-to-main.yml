@@ -1,0 +1,25 @@
+jobs:
+  Publish_kubernetes:
+    name: kubernetes
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_REGISTRY_URL: docker.io
+        DOCKER_USERNAME: rybnico
+      name: Docker Login
+      run: bash -c 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        "$DOCKER_REGISTRY_URL"'
+    - name: Publish octodns
+      run: script/docker-release
+    - env:
+        DOCKER_REGISTRY_URL: docker.io
+      name: Docker Logout
+      run: docker logout "$DOCKER_REGISTRY_URL"
+name: Publish to Docker Hub on push to main
+'on':
+  push:
+    branches:
+    - main
+    - github-actions
