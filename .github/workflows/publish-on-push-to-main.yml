@@ -7,7 +7,7 @@ jobs:
     - env:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKER_REGISTRY_URL: docker.io
-        DOCKER_USERNAME: rybnico
+        DOCKER_USERNAME: nrybnikar
       name: Docker Login
       run: bash -c 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         "$DOCKER_REGISTRY_URL"'
