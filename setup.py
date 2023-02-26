@@ -37,7 +37,7 @@ tests_require = ('pytest', 'pytest-cov', 'pytest-network')
 
 setup(
     author='Nicolai Rybnikar',
-    author_email='nico@rybnikar.de',
+    author_email='octodns-kubernetes@rybnikar.de',
     description=description,
     extras_require={
         'dev': tests_require
@@ -59,6 +59,6 @@ setup(
     packages=find_packages(),
     python_requires='>=3.6',
     tests_require=tests_require,
-    url='https://github.com/octodns/octodns-kubernetes',
+    url='https://github.com/rybnico/octodns-kubernetes',
     version=version(),
 )
