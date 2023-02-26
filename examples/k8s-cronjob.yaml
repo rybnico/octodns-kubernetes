@@ -57,7 +57,7 @@ spec:
         spec:
           containers:
             - name: octodns-kubernetes
-              image: nrybnikar/octodns-kubernetes:0.0.1
+              image: rybnico/octodns-kubernetes:0.0.1
               imagePullPolicy: Always
               env:
                 - name: GIT_BRANCH
