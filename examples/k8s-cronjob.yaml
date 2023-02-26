@@ -1,0 +1,111 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: octodns-kubernetes
+  namespace: octodns-kubernetes
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: octodns-kubernetes
+rules:
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: octodns-kubernetes
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: octodns-kubernetes
+subjects:
+  - kind: ServiceAccount
+    name: octodns-kubernetes
+    namespace: octodns-kubernetes
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: octodns-kubernetes
+  namespace: octodns-kubernetes
+type: Opaque
+stringData:
+  git-credentials: |
+    https://username:password@github.com/username/repository.git
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: octodns-kubernetes
+  labels:
+    app.kubernetes.io/name: octodns-kubernetes
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          containers:
+            - name: octodns-kubernetes
+              image: nrybnikar/octodns-kubernetes:0.0.1
+              imagePullPolicy: Always
+              env:
+                - name: GIT_BRANCH
+                  value: main
+                - name: GIT_REPO_URL
+                  value: https://username@github.com/username/repository.git
+                - name: GIT_USER_NAME
+                  value: "OctoDNS Kubernetes"
+                - name: GIT_USER_EMAIL
+                  value: "octodns-kubernetes@example.com"
+                - name: CONFIG_FILE
+                  value: config.yaml
+                - name: HOME
+                  value: /workdir
+              workingDir: /workdir
+              command:
+                - /bin/bash
+              args:
+                - -c
+                - |
+                  set -euo pipefail
+                  git config --global credential.helper "store --file=/.git-credentials"
+                  git config --global user.email "${GIT_USER_EMAIL}"
+                  git config --global user.name "${GIT_USER_NAME}"
+                  git clone --depth 1 -b ${GIT_BRANCH} ${GIT_REPO_URL} repo
+                  cd repo
+                  octodns-sync --config-file ${CONFIG_FILE} --doit --force
+                  git add .
+                  if [[ `git status --porcelain` ]]
+                  then
+                    git commit --message="octodns-kubernetes changes"
+                    git push origin ${GIT_BRANCH}
+                  fi
+              volumeMounts:
+                - mountPath: /workdir
+                  name: workdir
+                - mountPath: /.git-credentials
+                  name: secrets
+                  subPath: git-credentials
+          volumes:
+            - name: workdir
+              emptyDir: {}
+            - name: secrets
+              secret:
+                secretName: octodns-kubernetes
+          restartPolicy: Never
+          automountServiceAccountToken: true
+          serviceAccountName: octodns-kubernetes
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
